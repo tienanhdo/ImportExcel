@@ -41,14 +41,11 @@ namespace ImportExcel.Controllers
                     for (int row = 4; row <= rowCount; row++)
                     {
                         var a = row;
+                       //đọc dữ liệu từ file excel
                         ExcelDataModel data = new ExcelDataModel
                         {
 
-
                             Date = ParseDateTime(worksheet.Cells[row, 1].Value?.ToString()),
-
-
-
                             STK_ID = (worksheet.Cells[row, 2].Value?.ToString()),
                             STK_NAME = worksheet.Cells[row, 3].Value?.ToString(),
                             Ma_NH = worksheet.Cells[row, 4].Value?.ToString(),
@@ -61,6 +58,8 @@ namespace ImportExcel.Controllers
                             Ma_Thue_Suat = worksheet.Cells[row, 11].Value?.ToString(),
                             Ton_Kho = int.Parse(worksheet.Cells[row, 12].Value?.ToString()),
                             Gia_Tri_Ton = decimal.Parse(worksheet.Cells[row, 13].Value?.ToString())
+
+
                         };
 
                         dataList.Add(data);
