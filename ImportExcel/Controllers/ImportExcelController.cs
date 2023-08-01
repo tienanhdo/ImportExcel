@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
+using System.Globalization;
 
 namespace ImportExcel.Controllers
 {
@@ -42,8 +43,12 @@ namespace ImportExcel.Controllers
                         var a = row;
                         ExcelDataModel data = new ExcelDataModel
                         {
-                            
-                            Date = DateTime.Parse(worksheet.Cells[row, 1].Value?.ToString()),
+
+
+                            Date = ParseDateTime(worksheet.Cells[row, 1].Value?.ToString()),
+
+
+
                             STK_ID = (worksheet.Cells[row, 2].Value?.ToString()),
                             STK_NAME = worksheet.Cells[row, 3].Value?.ToString(),
                             Ma_NH = worksheet.Cells[row, 4].Value?.ToString(),
@@ -75,9 +80,32 @@ namespace ImportExcel.Controllers
                 return StatusCode(500, $"Lỗi xảy ra trong quá trình xử lý tệp Excel: {ex.Message}");
             }
         }
+
+
+
+        // Phương thức chuyển đổi chuỗi ngày thành đối tượng DateTime
+        private static DateTime ParseDateTime(string dateString)
+        {
+            // Các định dạng ngày tháng có thể xuất hiện trong tệp Excel
+            string[] formats = { "dd/M/yyyy", "dd/MM/yyyy", "d/M/yyyy", "d/MM/yyyy" };
+
+            DateTime parsedDate;
+
+            if (DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+            {
+                return parsedDate;
+            }
+            else
+            {
+                // Nếu không thể chuyển đổi, bạn có thể xử lý hoặc thông báo lỗi tùy ý
+                throw new ArgumentException($"Không thể chuyển đổi chuỗi '{dateString}' thành đối tượng DateTime hợp lệ.");
+            }
+
+        }
     }
     public class FileUploadModel
     {
         public IFormFile File { get; set; }
     }
+
 }
